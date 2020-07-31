@@ -35,9 +35,8 @@ exports.login = async (req, res, next) => {
   res.status(200).json({ status: "ok", token, id: user._id, role: user.role });
 };
 exports.isVerified = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
   let isValid;
-  try {
+  try{const token = req.headers.authorization.split(" ")[1];
     isValid = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     return next(new HttpError("Uzytkownik nie zweryfikowany", 403));

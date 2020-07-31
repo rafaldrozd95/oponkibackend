@@ -15,7 +15,6 @@ exports.getTyres = async (req, res, next) => {
     srednica = undefined,
     type = undefined,
   } = req.query;
-
   const sortBy = req.query.sorty
     ? req.query.sorty === "up"
       ? "price"
@@ -35,13 +34,13 @@ exports.getTyres = async (req, res, next) => {
         clas == "undefined"
           ? { $in: ["terenowa", "wzmacniana", "samochodowa"] }
           : clas,
+      type: type == "undefined" ? { $in: ["nowa", "bieznikowana"] } : type,
       sezon:
         sezon == "undefined" ? { $in: ["lato", "zima", "allseason"] } : sezon,
     })
       .sort(sortBy)
       .skip(skip)
       .limit(limit);
-
     res.status(200).json({
       tyres,
     });
@@ -51,7 +50,7 @@ exports.getTyres = async (req, res, next) => {
 };
 
 exports.createTyre = async (req, res, next) => {
-  const {
+ const {
     year,
     clas,
     description,
@@ -63,8 +62,8 @@ exports.createTyre = async (req, res, next) => {
     szerokosc,
     type,
   } = req.body;
-  const images = req.files.images.map((el) => el.path);
-  const imageCover = req.files.imageCover[0].path;
+  const images = req.files.image.map((el) => el.path.split('/').slice(3).join('/'));
+  const imageCover = req.files.imageCover[0].path.split('/').slice(3).join('/');
   let tyre;
   try {
     tyre = new Tyre({

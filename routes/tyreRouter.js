@@ -22,9 +22,9 @@ router.post(
   isVerified,
   isAdmin,
   fileUpload.fields([
-    { name: "imageCover", maxCount: 1 },
-    { name: "images", maxCount: 4 },
-  ]),
+  {name: 'image', maxCount: 4},
+   {name: 'imageCover', maxCount: 1}
+]),
   createTyre
 );
 module.exports = router;
