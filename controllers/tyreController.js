@@ -50,7 +50,7 @@ exports.getTyres = async (req, res, next) => {
 };
 
 exports.createTyre = async (req, res, next) => {
- const {
+  const {
     year,
     clas,
     description,
@@ -62,8 +62,10 @@ exports.createTyre = async (req, res, next) => {
     szerokosc,
     type,
   } = req.body;
-  const images = req.files.image.map((el) => el.path.split('/').slice(3).join('/'));
-  const imageCover = req.files.imageCover[0].path.split('/').slice(3).join('/');
+  const images = req.files.image.map((el) =>
+    el.path.split("/").slice(3).join("/")
+  );
+  const imageCover = req.files.imageCover[0].path.split("/").slice(3).join("/");
   let tyre;
   try {
     tyre = new Tyre({

@@ -15,16 +15,16 @@ const fileUpload = require("../middlewares/file-upload");
 router.get("/", getTyres);
 router.get("/:tid", getTyreById);
 router.delete("/:tid", isVerified, isAdmin, deleteTyreById);
-router.patch("/:tid", updateTyreById);
+router.patch("/:tid", isVerified, isAdmin, updateTyreById);
 
 router.post(
   "/",
   isVerified,
   isAdmin,
   fileUpload.fields([
-  {name: 'image', maxCount: 4},
-   {name: 'imageCover', maxCount: 1}
-]),
+    { name: "image", maxCount: 4 },
+    { name: "imageCover", maxCount: 1 },
+  ]),
   createTyre
 );
 module.exports = router;

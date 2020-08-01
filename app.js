@@ -10,9 +10,11 @@ app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 app.use(bodyParser.json());
 app.use(cors());
+const orderRouter = require("./routes/orderRouter");
 const tyreRouter = require("./routes/tyreRouter");
 const userRouter = require("./routes/authRouter");
 app.use("/api/tyres", tyreRouter);
+app.use("/api/order", orderRouter);
 app.use("/api/users", userRouter);
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route", 404);
