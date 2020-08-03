@@ -66,6 +66,8 @@ exports.createTyre = async (req, res, next) => {
     el.path.split("/").slice(3).join("/")
   );
   const imageCover = req.files.imageCover[0].path.split("/").slice(3).join("/");
+  const producent = req.files.producent[0].path.split("/").slice(3).join("/");
+
   let tyre;
   try {
     tyre = new Tyre({
@@ -81,6 +83,7 @@ exports.createTyre = async (req, res, next) => {
       type,
       image: images,
       imageCover,
+      producent,
     });
     await tyre.save();
 
@@ -118,4 +121,3 @@ exports.updateTyreById = async (req, res, next) => {
   }
   res.json({ ok: "ok" });
 };
-

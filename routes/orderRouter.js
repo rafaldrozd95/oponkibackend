@@ -8,7 +8,6 @@ const {
   updateOrderById,
 } = require("../controllers/orderController");
 const router = express.Router();
-
 router.post("/:tid", createOrder);
 router.delete("/:oid", isVerified, isAdmin, deleteOrderById);
 router.patch("/:oid", isVerified, isAdmin, updateOrderById);

@@ -46,6 +46,7 @@ const tyreSchema = new mongoose.Schema(
     },
     image: [String],
     imageCover: [String],
+    producent: String,
     price: { type: Number, required: true },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
