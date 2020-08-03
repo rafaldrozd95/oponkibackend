@@ -5,15 +5,15 @@ const path = require("path");
 
 exports.getTyres = async (req, res, next) => {
   const {
-    clas = undefined,
-    description = undefined,
-    name = undefined,
-    price = undefined,
-    profil = undefined,
-    sezon = undefined,
-    szerokosc = undefined,
-    srednica = undefined,
-    type = undefined,
+    clas = "undefined",
+    description = "undefined",
+    name = "undefined",
+    price = "undefined",
+    profil = "undefined",
+    sezon = "undefined",
+    szerokosc = "undefined",
+    srednica = "undefined",
+    type = "undefined",
   } = req.query;
   const sortBy = req.query.sorty
     ? req.query.sorty === "up"
@@ -118,3 +118,4 @@ exports.updateTyreById = async (req, res, next) => {
   }
   res.json({ ok: "ok" });
 };
+

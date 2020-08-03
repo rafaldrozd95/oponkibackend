@@ -5,11 +5,30 @@ const nodemailer = require("nodemailer");
 
 exports.createOrder = async (req, res, next) => {
   const tid = req.params.tid;
-  const { adres, city, dostawa, email, ile, phone, postal } = req.body;
-  if (!adres || !city || !dostawa || !email || !ile || !phone || !postal) {
+  const {
+    adres,
+    city,
+    dostawa,
+    email,
+    ile,
+    phone,
+    postal,
+    imieinazwisko,
+  } = req.body;
+  if (
+    !adres ||
+    !city ||
+    !dostawa ||
+    !email ||
+    !ile ||
+    !phone ||
+    !postal ||
+    !imieinazwisko
+  ) {
     return next(new HttpError("Nie podano wszystkich danych", 404));
   }
   const order = new Order({
+    imieinazwisko,
     adres,
     city,
     dostawa,
@@ -33,18 +52,24 @@ exports.createOrder = async (req, res, next) => {
     let info = await transporter.sendMail({
       from: "kontakt@oponydrozd.com", //
       to: email,
-      subject: "Potwierdzenie zakupu opon OponyDrozd.com",
+      subject: "[Potwierdzenie zakupu] OponyDrozd.com",
       text: "",
       html: `<h1>Szanowni Państwo</h1>
             <h2>Dziękujemy za zakup opon ${
               opona.name
             } w ilości sztuk ${ile}</h2>
-            <h2>Całkowita kwota do zapłaty to ${ile * opona.price}.00PLN.<h2>
+            <h2>Całkowita kwota do zapłaty to <b>${
+              ile * opona.price
+            }</b>.00PLN.<h2>
             <h3>Informujemy, że zlecenie zostało przyjęte do realizacji.</h3>
             <h4>W razie wątpliwości co do poprawności zamówienia, skontaktuje się z Państwem nasz konsultant.</h4>
             <h4>Z wyrazami szacunku,</h4>
+            <h5>Adres wysyłki:</h5>
+            <h5>${imieinazwisko}</h5>
+            <h5>${adres}, ${postal}, ${city} </h5>
             <h4>OponyDrozd.com</h4>
             <a href="https://oponydrozd.com">OponyDrozd.com</a>
+            <h5><img src=https://oponydrozd.com/uploads/images/jander.png alt="OPONY JAND"/></h5>
       `,
     });
     console.log("Message sent: %s", info.messageId);
@@ -86,3 +111,4 @@ exports.updateOrderById = async (req, res, next) => {
     return next(new HttpError("Nie udalo sie zaktualizowac", 402));
   }
 };
+

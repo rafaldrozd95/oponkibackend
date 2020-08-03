@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 const path = require("path");
+const mongoSanitize= require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const cors = require("cors");
 require("dotenv").config();
 const HttpError = require("./controllers/httpError");
@@ -10,6 +12,8 @@ app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(mongoSanitize());
+app.use(xss());
 const orderRouter = require("./routes/orderRouter");
 const tyreRouter = require("./routes/tyreRouter");
 const userRouter = require("./routes/authRouter");

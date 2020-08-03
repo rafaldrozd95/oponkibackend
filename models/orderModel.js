@@ -30,6 +30,10 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imieinazwisko: {
+      type: String,
+      required: true,
+    },
     phone: { type: String, required: true },
     city: { type: String, required: true },
     relised: { type: Boolean, default: false },
@@ -38,3 +42,4 @@ const orderSchema = new mongoose.Schema(
 );
 
 module.exports = new mongoose.model("Order", orderSchema);
+
