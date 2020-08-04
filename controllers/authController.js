@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const HttpError = require("./httpError");
 const jwt = require("jsonwebtoken");
+const Przelewy24 = require("../middlewares/paymentController");
 
 exports.signUp = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -36,7 +37,8 @@ exports.login = async (req, res, next) => {
 };
 exports.isVerified = (req, res, next) => {
   let isValid;
-  try{const token = req.headers.authorization.split(" ")[1];
+  try {
+    const token = req.headers.authorization.split(" ")[1];
     isValid = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     return next(new HttpError("Uzytkownik nie zweryfikowany", 403));
@@ -55,4 +57,55 @@ exports.isAdmin = async (req, res, next) => {
     return next(new HttpError("Nie udalo sie zweryfikowac administracji", 402));
   }
   next();
+};
+
+const P24_TRUST_IPS = [
+  "91.216.191.181",
+  "91.216.191.182",
+  "91.216.191.183",
+  "91.216.191.184",
+  "91.216.191.185",
+  "92.43.119.144",
+  "92.43.119.145",
+  "92.43.119.146",
+  "92.43.119.147",
+  "92.43.119.148",
+  "92.43.119.149",
+  "92.43.119.150",
+  "92.43.119.151",
+  "92.43.119.152",
+  "92.43.119.153",
+  "92.43.119.154",
+  "92.43.119.155",
+  "92.43.119.156",
+  "92.43.119.157",
+  "92.43.119.158",
+  "92.43.119.159",
+];
+exports.confirmPayment = async (req, res, next) => {
+  if (P24_TRUST_IPS.indexOf(req.headers["x-real-ip"]) === -1) {
+    return next(new Error("Unauthorized IP address"));
+  }
+  const {
+    p24_session_id,
+    p24_amount,
+    p24_currency,
+    p24_order_id,
+    p24_sign,
+  } = req.body;
+  console.log(req.body);
+  const P24 = new Przelewy24("119910", "119910", "afc308b6ad85f834", true);
+
+  P24.setSessionId(p24_session_id);
+  P24.setAmount(p24_amount);
+  P24.setCurrency(p24_currency);
+  P24.setOrderId(p24_order_id);
+
+  try {
+    await P24.verify(p24_sign);
+
+    return res.send("OK");
+  } catch (e) {
+    return next(e);
+  }
 };
