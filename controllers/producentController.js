@@ -1,6 +1,6 @@
 const Producent = require("../models/producentModel");
 
-exports.createTyre = async (req, res, next) => {
+exports.createProducent = async (req, res, next) => {
   const { name } = req.body;
 
   const image = req.files.producentImage.path.split("/").slice(3).join("/");
