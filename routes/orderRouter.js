@@ -13,20 +13,16 @@ const {
 } = require("../controllers/orderController");
 const router = express.Router();
 router.post("/payment", async (req, res, next) => {
-  const P24 = new Przelewy24("119910", "119910", "afc308b6ad85f834", true);
+  const P24 = new Przelewy24(119910, 119910, "bfab0832d2c1f382", false);
 
-  P24.setSessionId("nodeapitest1");
-  P24.setAmount(5.2 * 100);
+  P24.setSessionId("31231");
+  P24.setAmount(10);
   P24.setCurrency("PLN");
-  P24.setDescription("Simple yyy.");
-  P24.setEmail("test@gmail.com");
+  P24.setDescription("Simple payment.");
+  P24.setEmail("rafaldrozd95@gmail.com");
   P24.setCountry("PL");
-  P24.setUrlStatus("http://localhost:8000/api/order/confirmPayment");
+  P24.setUrlStatus("http://46.101.243.96/api/order/confirmPayment");
   P24.setUrlReturn("https://oponydrozd.com");
-
-  P24.addProduct("Product no.1", "Product description", 1, 1.2 * 100);
-  P24.addProduct("Product no.2", null, 2, 5 * 100);
-  P24.addProduct("Product no.3", null, 1, 9.2 * 100, "20202");
 
   try {
     const token = await P24.register();
@@ -36,6 +32,7 @@ router.post("/payment", async (req, res, next) => {
     res.json({ url });
   } catch (e) {
     console.log(e.message);
+    return next(new Error(e.message));
   }
 });
 router.post("/confirmPayment", confirmPayment);

@@ -24,7 +24,6 @@ router.post(
   fileUpload.fields([
     { name: "image", maxCount: 4 },
     { name: "imageCover", maxCount: 1 },
-    { name: "producent", maxCount: 1 },
   ]),
   createTyre
 );

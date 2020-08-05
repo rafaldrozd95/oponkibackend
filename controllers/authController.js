@@ -65,22 +65,6 @@ const P24_TRUST_IPS = [
   "91.216.191.183",
   "91.216.191.184",
   "91.216.191.185",
-  "92.43.119.144",
-  "92.43.119.145",
-  "92.43.119.146",
-  "92.43.119.147",
-  "92.43.119.148",
-  "92.43.119.149",
-  "92.43.119.150",
-  "92.43.119.151",
-  "92.43.119.152",
-  "92.43.119.153",
-  "92.43.119.154",
-  "92.43.119.155",
-  "92.43.119.156",
-  "92.43.119.157",
-  "92.43.119.158",
-  "92.43.119.159",
 ];
 exports.confirmPayment = async (req, res, next) => {
   if (P24_TRUST_IPS.indexOf(req.headers["x-real-ip"]) === -1) {
@@ -94,7 +78,7 @@ exports.confirmPayment = async (req, res, next) => {
     p24_sign,
   } = req.body;
   console.log(req.body);
-  const P24 = new Przelewy24("119910", "119910", "afc308b6ad85f834", true);
+  const P24 = new Przelewy24(119910, 119910, "bfab0832d2c1f382", true);
 
   P24.setSessionId(p24_session_id);
   P24.setAmount(p24_amount);

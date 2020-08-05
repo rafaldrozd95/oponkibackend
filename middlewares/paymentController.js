@@ -263,6 +263,8 @@ module.exports = class Przelewy24 {
       }
 
       this.form.p24_sign = this.getCrc();
+      console.log(this.form.p24_sign);
+
       this.loadProductsToForm();
 
       try {

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Schema.ObjectId;
 
 const tyreSchema = new mongoose.Schema(
   {
@@ -46,8 +47,11 @@ const tyreSchema = new mongoose.Schema(
     },
     image: [String],
     imageCover: [String],
-    producent: String,
     price: { type: Number, required: true },
+    producent: { type: ObjectId, ref: "Producent", required: true },
+    indeks: {
+      type: String,
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

@@ -17,9 +17,12 @@ app.use(xss());
 const orderRouter = require("./routes/orderRouter");
 const tyreRouter = require("./routes/tyreRouter");
 const userRouter = require("./routes/authRouter");
+const producentRouter = require("./routes/producentRouter");
 app.use("/api/tyres", tyreRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/users", userRouter);
+app.use("/api/producent", producentRouter);
+
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route", 404);
   throw error;
