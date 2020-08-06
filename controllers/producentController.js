@@ -2,8 +2,8 @@ const Producent = require("../models/producentModel");
 
 exports.createProducent = async (req, res, next) => {
   const { name } = req.body;
-
-  const image = req.files.producentImage.path.split("/").slice(3).join("/");
+console.log(req.file);
+ const image = req.file.path.split("/").slice(3).join("/");
 
   let producent;
   try {

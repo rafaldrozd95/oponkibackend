@@ -61,17 +61,19 @@ exports.createTyre = async (req, res, next) => {
     srednica,
     szerokosc,
     type,
+    producent,
+    indeks
   } = req.body;
   const images = req.files.image.map((el) =>
     el.path.split("/").slice(3).join("/")
   );
   const imageCover = req.files.imageCover[0].path.split("/").slice(3).join("/");
-  const producent = req.files.producent[0].path.split("/").slice(3).join("/");
-
   let tyre;
   try {
     tyre = new Tyre({
+      indeks,
       year,
+      producent: producent[0],
       clas,
       description,
       name,
@@ -83,7 +85,6 @@ exports.createTyre = async (req, res, next) => {
       type,
       image: images,
       imageCover,
-      producent,
     });
     await tyre.save();
 
@@ -95,7 +96,7 @@ exports.createTyre = async (req, res, next) => {
 exports.getTyreById = async (req, res, next) => {
   const tid = req.params.tid;
   try {
-    const tyre = await Tyre.findById(tid);
+    const tyre = await Tyre.findById(tid).populate("producent");
     res.status(200).json({ tyre });
   } catch (err) {
     return next(new HttpError("Nie udalo sie znalesc opony", 404));
