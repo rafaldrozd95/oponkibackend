@@ -37,9 +37,9 @@ const orderSchema = new mongoose.Schema(
     phone: { type: String, required: true },
     city: { type: String, required: true },
     relised: { type: Boolean, default: false },
+    oplacone: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
 module.exports = new mongoose.model("Order", orderSchema);
-

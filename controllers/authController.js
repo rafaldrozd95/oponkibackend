@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const Order = require("../models/orderModel");
+
 const HttpError = require("./httpError");
 const jwt = require("jsonwebtoken");
 const Przelewy24 = require("../middlewares/paymentController");
@@ -67,6 +69,7 @@ const P24_TRUST_IPS = [
   "91.216.191.185",
 ];
 exports.confirmPayment = async (req, res, next) => {
+  console.log(req.body);
   if (P24_TRUST_IPS.indexOf(req.headers["x-real-ip"]) === -1) {
     return next(new Error("Unauthorized IP address"));
   }
@@ -87,6 +90,9 @@ exports.confirmPayment = async (req, res, next) => {
 
   try {
     await P24.verify(p24_sign);
+    const order = await Order.findByIdAndUpdate(p24_session_id, {
+      oplacone: true,
+    });
 
     return res.send("OK");
   } catch (e) {

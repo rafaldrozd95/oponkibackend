@@ -2,6 +2,41 @@ const Order = require("../models/orderModel");
 const Tyre = require("../models/tyreModel");
 const HttpError = require("./httpError");
 const nodemailer = require("nodemailer");
+const Przelewy24 = require("../middlewares/paymentController");
+
+async function createPayment(
+  id,
+  pos,
+  salt,
+  status,
+  price,
+  desc,
+  email,
+  orderid
+) {
+  const P24 = new Przelewy24(id, pos, salt, status);
+  P24.setSessionId(orderid);
+  P24.setAmount(price * 100);
+  P24.setCurrency("PLN");
+  P24.setDescription(desc);
+  P24.setEmail(email);
+  P24.setCountry("PL");
+  P24.setUrlStatus("http://46.101.243.96/api/order/confirmpayment");
+  P24.setUrlReturn("https://oponydrozd.com/paymentConfirmed");
+
+  // What about adding some products?
+  P24.addProduct("Product no.1", "Product description", 1, 1.2 * 100);
+  P24.addProduct("Product no.2", null, 2, 5 * 100);
+  P24.addProduct("Product no.3", null, 1, 9.2 * 100, "20202");
+
+  // Register our order
+  try {
+    const token = await P24.register();
+    const url = P24.getPayByLinkUrl(token);
+
+    return url;
+  } catch (e) {}
+}
 
 exports.createOrder = async (req, res, next) => {
   const tid = req.params.tid;
@@ -27,6 +62,15 @@ exports.createOrder = async (req, res, next) => {
   ) {
     return next(new HttpError("Nie podano wszystkich danych", 404));
   }
+  let transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "kontakt@oponydrozd.com",
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
   const order = new Order({
     imieinazwisko,
     adres,
@@ -39,17 +83,10 @@ exports.createOrder = async (req, res, next) => {
     opona: tid,
   });
   try {
+    let url;
     let opona = await Tyre.findById(tid);
-    let transporter = nodemailer.createTransport({
-      host: "mail.privateemail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "kontakt@oponydrozd.com",
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
-    let info = await transporter.sendMail({
+
+    await transporter.sendMail({
       from: "kontakt@oponydrozd.com", //
       to: email,
       subject: "[Potwierdzenie zakupu] OponyDrozd.com",
@@ -72,12 +109,25 @@ exports.createOrder = async (req, res, next) => {
             <h5><img src=https://oponydrozd.com/uploads/images/jander.png alt="OPONY JAND"/></h5>
       `,
     });
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+
+    if (dostawa == "P24") {
+      const price = ile * opona.price;
+      url = await createPayment(
+        119910,
+        119910,
+        "bfab0832d2c1f382",
+        true,
+        ile * opona.price,
+        `${opona.name}, ${ile}, ${price}`,
+        email,
+        order._id.toString()
+      );
+    }
+
     await order.save();
-    res.status(200).json({ order });
+    return res.status(200).json({ url });
   } catch (err) {
-    return next(new HttpError("Nie udalo sie zlozyc zamowienia", 404));
+    return next(new HttpError(err, 404));
   }
 };
 
@@ -111,4 +161,3 @@ exports.updateOrderById = async (req, res, next) => {
     return next(new HttpError("Nie udalo sie zaktualizowac", 402));
   }
 };
-
