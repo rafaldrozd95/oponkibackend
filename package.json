@@ -30,7 +30,7 @@
     "request": "^2.88.2",
     "request-promise-native": "^1.0.9",
     "uuidv1": "^1.6.14",
-    "validator": "^13.1.1",
+    "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   }
 }
